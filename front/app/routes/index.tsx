@@ -14,13 +14,11 @@ function Feature({
 }) {
   return (
     <div className="flex flex-col w-fit max-w-150 items-center justify-center">
-      <div className="flex h-38 w-38 rounded-full dark:bg-white border-10 border-emerald-500 items-center justify-center">
+      <div className="flex h-38 w-38 rounded-full  border-10 border-emerald-500 items-center justify-center">
         <img className="max-w-25 rounded-full" src={imgsrc}></img>
       </div>
-      <h1 className="text-xl font-semibold text-center dark:text-white m-4">
-        {title}
-      </h1>
-      <p className="text-md text-base/4 dark:font-medium md:text-base/5 text-center text-gray-700 dark:text-white">
+      <h1 className="text-xl font-semibold text-center  m-4">{title}</h1>
+      <p className="text-md text-base/4  md:text-base/5 text-center text-gray-700 ">
         {content}
       </p>
     </div>
@@ -57,7 +55,7 @@ export default function Index() {
           </div>
         </div>
       </section>
-      <section className="features w-full h-full dark:bg-[#12002b]">
+      <section className="features w-full h-full ">
         <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-20 pt-15 ml-8 mr-8 mb-15 md:m-8">
           <Feature
             imgsrc={iconChat}

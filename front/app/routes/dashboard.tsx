@@ -35,11 +35,6 @@ export default function Dashboard() {
   const [firstName, setFirstName] = useState(user.user.firstName);
   const [lastName, setLastName] = useState(user.user.lastName);
 
-  useEffect(() => {
-    if (user.user?.firstName) setFirstName(user.user.firstName);
-    if (user.user?.lastName) setLastName(user.user.lastName);
-  }, [user.user?.firstName, user.user?.lastName]);
-
   const editUser = () => {
     if (isEditing === false) {
       setIsEditing(true);
@@ -70,9 +65,9 @@ export default function Dashboard() {
   }, [user.isAuthenticated, navigate]);
 
   return (
-    <section className="flex flex-col min-w-full min-h-full items-center bg-slate-200 dark:bg-[#12002b]">
-      <div className="mt-5 mb-5 text-center dark:text-white text-gray-700 font-bold">
-        <h1 className="text-3xl dark:text-white text-gray-700">Welcome back</h1>
+    <section className="flex flex-col min-w-full min-h-full items-center bg-slate-200 ">
+      <div className="mt-5 mb-5 text-center text-gray-700 font-bold">
+        <h1 className="text-3xl text-gray-700">Welcome back</h1>
 
         {isEditing ? (
           <>
@@ -86,7 +81,8 @@ export default function Dashboard() {
                   type="text"
                   name="firstName"
                   id="firstName"
-                  value={firstName}
+                  defaultValue={user.user.firstName}
+                  key={user.user.firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   required
                 ></input>
@@ -103,7 +99,8 @@ export default function Dashboard() {
                   type="text"
                   name="lastName"
                   id="lastName"
-                  value={lastName}
+                  defaultValue={user.user.lastName}
+                  key={user.user.lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   required
                 ></input>
@@ -119,7 +116,7 @@ export default function Dashboard() {
           </>
         ) : (
           <>
-            <h1 className="text-3xl dark:text-white text-gray-700">
+            <h1 className="text-3xl text-gray-700">
               {user.user.firstName} {user.user.lastName} !
             </h1>
             <button

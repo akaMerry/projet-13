@@ -14,86 +14,97 @@ import {
 
 interface userState {
   isAuthenticated: boolean;
-  token: null | string;
   user: {
-    createdAt: null | Date;
-    id: null | string;
-    firstName: null | string;
-    lastName: null | string;
-    email: null | string;
-    updatedAt: null | Date;
+    createdAt: undefined | Date;
+    id: undefined | string;
+    firstName: undefined | string;
+    lastName: undefined | string;
+    email: undefined | string;
+    updatedAt: undefined | Date;
   };
 }
 
 const initialState = {
   isAuthenticated: false,
-  token: null,
   user: {
-    createdAt: null,
-    id: null,
-    firstName: null,
-    lastName: null,
-    email: null,
-    updatedAt: null,
+    createdAt: undefined,
+    id: undefined,
+    firstName: undefined,
+    lastName: undefined,
+    email: undefined,
+    updatedAt: undefined,
   },
 } as userState;
 
 const baseURL = "http://localhost:3001/api/v1";
 
-export const getUser = createAsyncThunk(
-  "userState/getUser",
-  async (payload: { email: string; password: string }) => {
-    const login = await fetch(`${baseURL}/user/login`, {
+export const getToken = createAsyncThunk(
+  "userState/getToken",
+  async (payload: {
+    email: string;
+    password: string;
+    tokenStorage: boolean;
+  }) => {
+    const response = await fetch(`${baseURL}/user/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload),
-    }).then((response) => response.json());
+      body: JSON.stringify({
+        email: payload.email,
+        password: payload.password,
+      }),
+    });
 
-    const token = login.body.token;
+    const login = await response.json();
 
-    const userProfile = await fetch(`${baseURL}/user/profile`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }).then((response) => response.json());
-    const userData = userProfile.body;
+    let token;
 
-    return { token, userData };
+    if (payload.tokenStorage === true) {
+      localStorage.setItem("token", login.body.token);
+      token = login.body.token;
+    } else {
+      sessionStorage.setItem("token", login.body.token);
+      token = login.body.token;
+    }
   }
 );
 
+export const getUser = createAsyncThunk("userState/getUser", async () => {
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+
+  const response = await fetch(`${baseURL}/user/profile`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const user = await response.json();
+  const userData = user.body;
+
+  return { userData };
+});
+
 export const updateUser = createAsyncThunk(
   "userState/updateUser",
-  async (
-    payload: {
-      firstName: string;
-      lastName: string;
-    },
-    thunkAPI
-  ) => {
-    const state = thunkAPI.getState() as { user: userState };
-    const token = state.user.token;
+  async (payload: { firstName: string; lastName: string }) => {
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
 
-    await fetch(`${baseURL}/user/profile`, {
+    const response = await fetch(`${baseURL}/user/profile`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(payload),
-    }).then((response) => response.json());
+    });
 
-    const userProfile = await fetch(`${baseURL}/user/profile`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }).then((response) => response.json());
+    const updateUser = await response.json();
 
-    const userData = userProfile.body;
+    const userData = updateUser.body;
 
     return { userData };
   }
@@ -108,7 +119,6 @@ export const userSlice = createSlice({
   extraReducers(builder) {
     builder.addCase(getUser.fulfilled, (state, action) => {
       state.isAuthenticated = true;
-      state.token = action.payload.token;
       state.user = action.payload.userData;
     });
     builder.addCase(updateUser.fulfilled, (state, action) => {

@@ -1,6 +1,7 @@
 import { Link, Outlet, href } from "react-router";
 import Logo from "~/assets/argentBankLogo.png";
-import { logout, useAppDispatch, useAppSelector } from "~/store";
+import { logout, useAppDispatch, useAppSelector, getUser } from "~/store";
+import { useEffect } from "react";
 
 function Header() {
   const dispatch = useAppDispatch();
@@ -22,7 +23,7 @@ function Header() {
               </Link>
               <i className="fa fa-sign-out text-gray-700 ml-4"></i>
               <button onClick={() => dispatch(logout())}>
-                <p className="text-md md:text-lg text-gray-700 font-bold p-2">
+                <p className="text-md md:text-lg text-gray-700 font-bold p-2 cursor-pointer">
                   Sign out
                 </p>
               </button>
@@ -54,6 +55,12 @@ function Footer() {
 }
 
 export default function Home() {
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    if (localStorage.getItem("token") || sessionStorage.getItem("token")) {
+      dispatch(getUser());
+    }
+  }, [dispatch]);
   return (
     <>
       <Header />
