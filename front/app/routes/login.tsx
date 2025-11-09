@@ -85,7 +85,10 @@ export default function Login() {
           <input type="checkbox" id="tokenStorage" className="mr-1.5"></input>
           <label>Remember me</label>
         </div>
-        <button type="submit" className="bg-emerald-500 p-2 mt-4">
+        <button
+          type="submit"
+          className="bg-emerald-500 p-2 mt-4 cursor-pointer"
+        >
           <p className="text-white text-lg font-bold underline">Sign In</p>
         </button>
       </form>
