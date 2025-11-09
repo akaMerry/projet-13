@@ -1,8 +1,12 @@
 # Project #10 - Argent Bank API
 
-This codebase contains the code needed to run the backend for Argent Bank.
+## Swagger demo file
 
-## Getting Started
+Can be found in folder back > soutenance-demo-swagger.yaml
+
+## Backend
+
+This codebase contains the code needed to run the backend for Argent Bank.
 
 ### Prerequisites
 
