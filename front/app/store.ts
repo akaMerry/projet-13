@@ -114,7 +114,11 @@ export const userSlice = createSlice({
   name: "userState",
   initialState: initialState,
   reducers: {
-    logout: () => initialState,
+    logout: (state) => {
+      sessionStorage.removeItem("token");
+      state.isAuthenticated = false;
+      state.user = initialState.user;
+    },
   },
   extraReducers(builder) {
     builder.addCase(getUser.fulfilled, (state, action) => {
