@@ -69,6 +69,7 @@ paths:
       description: API for fetching a user profile
       parameters:
         - in: header
+          type: string
           name: Authorization
           description: Attach Bearer JWT token
           required: true
@@ -94,6 +95,7 @@ paths:
       parameters:
         - in: header
           name: Authorization
+          type: string
           description: Attach Bearer JWT token
           required: true
         - in: body
@@ -125,6 +127,7 @@ paths:
       parameters:
         - in: header
           name: Authorization
+          type: string
           description: Attach Bearer JWT token
           required: true
       produces:
@@ -133,7 +136,7 @@ paths:
         "200":
           description: Accounts retrieved successfully
           schema:
-            $ref: "#/definitions/AccountsResponse"
+            $ref: "#/definitions/ApiResponse"
         "400":
           description: Invalid Request
         "500":
@@ -150,6 +153,7 @@ paths:
       parameters:
         - in: header
           name: Authorization
+          type: string
           description: Attach Bearer JWT token
           required: true
         - in: path
@@ -180,6 +184,7 @@ paths:
       parameters:
         - in: header
           name: Authorization
+          type: string
           description: Attach Bearer JWT token
           required: true
         - in: path
@@ -224,6 +229,47 @@ paths:
           description: Account or Transactions Not Found
         "500":
           description: Internal Server Error
+
+  /user/accounts/{accoundId}/transactions/{transactionId}:
+    put:
+      security:
+        - Bearer: []
+      tags:
+        - Transaction Module
+      summary: Partially update a transaction
+      description: API for updating transaction attributes
+      parameters:
+        - in: header
+          name: Authorization
+          type: string
+          description: Attach Bearer JWT token
+          required: true
+        - in: path
+          name: accoundId
+          required: true
+          type: string
+        - in: path
+          name: transactionId
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            $ref: "#/definitions/UpdateTransaction"
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Transaction updated successfully
+          schema:
+            $ref: "#/definitions/ApiResponse"
+        "400":
+          description: Invalid Fields
+        "500":
+          description: Internal Server Error
+      x-codegen-request-body-name: body
 
 securityDefinitions:
   Bearer:
@@ -285,18 +331,6 @@ definitions:
       lastName:
         type: string
 
-  AccountsResponse:
-    type: object
-    properties:
-      status:
-        type: integer
-      message:
-        type: string
-      body:
-        type: array
-        items:
-          $ref: "#/definitions/Account"
-
   Account:
     type: object
     properties:
@@ -328,6 +362,15 @@ definitions:
         type: number
       type:
         type: string
-        enum:
-          - credit
-          - debit
+      notes:
+        type: string
+
+  UpdateTransaction:
+    type: object
+    properties:
+      name:
+        type: string
+      category:
+        type: string
+      notes:
+        type: string
